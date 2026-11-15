@@ -1,6 +1,6 @@
 # Chrono – Stopwatch & Timer: AI Guide
 
-**Current version: v5** (zip: `chrono_v5_phase1-3-pwa-tests.zip`)
+**Current version: v6** (zip: `chrono_v6_hours-layout-spacing.zip`)
 
 ## 1. MANDATORY RULES (jo bhi AI is project par kaam kare, use ye follow karna hi hai)
 
@@ -30,7 +30,7 @@ Landscape me chalne wala stopwatch + timer + interval. Bade digits, adaptive lay
 |---|---|
 | 1 minute se kam | `l1`: sirf seconds poori screen |
 | 1 minute se 1 ghanta | `l2`: minutes aur seconds half-half |
-| 1 ghanta ya zyada | `l3`: hours aur minutes barabar bade, seconds chhota, right column me, uski baseline minutes ke digit ki baseline ke barabar |
+| 1 ghanta ya zyada | `l3`: hours (thoda left) aur minutes (thoda right) barabar bade aur beech me saaf gap, seconds bahut chhota, right column (20%) me, uski baseline minutes ke digit ki baseline ke barabar |
 
 Modes: Stopwatch (`sw`), Timer (`tm`), Interval/Pomodoro (`iv`), Clock/live time (`clk`, layout `l3` seconds ke saath ya `l4` bina seconds).
 
@@ -70,7 +70,7 @@ Code map:
 
 - **Layout / digit size**: `style.css` (`#app.l1/.l2/.l3`, grid areas) aur `app.js` `fit()` + `metrics()`.
   - `metrics()` canvas se digit ki asli height/offset naapta hai (digit ko box ke beech rakhne ke liye). Hatao mat.
-  - `fit()` me height ka hissa: `.68` (setup `.45`, seconds mini `.26`). `translate` property se digit ko vertically center aur `l3` me seconds ki baseline align hoti hai. Digit par `transform` mat lagao (flip animation use karti hai).
+  - `fit()` me height ka hissa: `.68` (setup `.45`, seconds mini `.18`). `l3/l4` me hours/minutes ki width `.84`, seconds `.62`; hours panel ka digit `-5%` left aur minutes ka `+4%` right khiskata hai (`translate` ka x), taaki double-digit hours minutes se na chipken. `translate` property se digit ko vertically center aur `l3` me seconds ki baseline align hoti hai. Digit par `transform` mat lagao (flip animation use karti hai).
 - **Themes**: `style.css` `body[data-theme=...]` (variables `--bgA --bgB --fgA --fgB --glow --font --w --ui`) + `app.js` `THEMES`. Naya theme = CSS block + `THEMES` entry + font ho to Google Fonts link.
 - **Themes ka naya system**: panel par `--fg` variable (digit rang), `--dfill` (outline theme me fill), `--sw` (outline motai). Neon/Matrix me beech ka divider `body.has-div #app::before`. Matrix ki digital rain `rain()` + `<canvas id="rain">`.
 - **Custom theme**: `app.js` `applyCustom()`, `FONTS`, `S.custom` (4 rang, font, glow, outline, split line). Settings me "Custom theme" section.
@@ -142,6 +142,12 @@ App ka naam aur package ID; sirf Android ya Android + PWA; weather Home card + f
 - Interval me total rounds ke baad band hone ka option.
 
 ## 8. Changelog
+
+### v6 (`chrono_v6_hours-layout-spacing`)
+- Hours wale layout (`l3`) me seconds aur chhota (height `.26` -> `.18`, width `.7` -> `.62`) aur seconds column `24%` -> `20%`.
+- Minutes right ki taraf (+4% panel width) aur hours left ki taraf (-5%) khiskaye; hours/minutes ki digit width `.92` -> `.84`. Double-digit hours (jaise 12) ab minutes se mile hue nahi lagte. Clock mode (`l4`) me bhi wahi.
+- Neon/Matrix ka divider `l3` me `40%` par (column badalne ki wajah se).
+- Test: `tests/run_tests.py` me 3 naye checks (hours-minutes gap, seconds size, minutes-seconds gap). `sw.js` cache `chrono-v6`.
 
 ### v5 (`chrono_v5_phase1-3-pwa-tests`)
 - **Phase 1**: timer ka hisaab `Date.now()` timestamps par (pehle `performance.now()`, jo kuch phones par sleep me ruk sakti thi). Running state save hota hai, refresh/app band hone ke baad bhi sahi time. Tap se start/pause: Off / Double-tap / Tap anywhere (Settings > Display).

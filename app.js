@@ -25,7 +25,7 @@ function fit(){
   ps.forEach(p=>{
     const d=p.querySelector('.digits');d.style.fontSize='100px';d.style.translate='none';
     const w=d.getBoundingClientRect().width||1,mt=metrics(d),mini=layout===3&&p===pS;
-    const f=mini?.26:(setup?.45:.68),wf=mini?.7:.92;
+    const f=mini?.18:(setup?.45:.68),wf=mini?.62:(layout>=3?.84:.92);
     p._s=Math.min(p.clientHeight*f/mt.h*100,p.clientWidth*wf/w*100);p._m=mt;
   });
   if(layout>=3){const u=Math.min(pH._s,pM._s);pH._s=pM._s=u}
@@ -33,7 +33,8 @@ function fit(){
     const d=p.querySelector('.digits');d.style.fontSize=p._s+'px';
     let y=p._m.off*p._s/100;
     if(layout===3&&p===pS)y+=(pM._m.h*pM._s-pS._m.h*pS._s)/200;
-    d.style.translate='0 '+y+'px';
+    let x=0;if(layout>=3){if(p===pH)x=-p.clientWidth*.05;else if(p===pM)x=p.clientWidth*.04}
+    d.style.translate=x+'px '+y+'px';
   });
 }
 function setT(e,t){

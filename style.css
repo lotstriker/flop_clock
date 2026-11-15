@@ -5,7 +5,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;overflow:hidden;background:#000;font-family:system-ui,-apple-system,sans-serif;-webkit-user-select:none;user-select:none;touch-action:manipulation}
 body{--bgA:#000;--bgB:#000;--fgA:#fff;--fgB:#fff;--glow:none;--font:'Bebas Neue','Oswald',Impact,sans-serif;--w:400;--ui:#fff;background:#000;-webkit-tap-highlight-color:transparent}
 #app{position:relative;height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr}
-#app.l3{grid-template-columns:1fr 1fr 24%}
+#app.l3{grid-template-columns:1fr 1fr 20%}
 .panel{display:none;position:relative;align-items:center;justify-content:center;overflow:hidden;background:var(--bgA);--fg:var(--fgA);color:var(--fg)}
 .panel[data-slot=b]{background:var(--bgB);--fg:var(--fgB);color:var(--fg)}
 .l1 #pS,.l2 #pM,.l2 #pS,.l3 .panel,.l4 #pH,.l4 #pM{display:flex}
@@ -82,7 +82,7 @@ body[data-theme=paper] button.g.on{color:#fff}
 body[data-theme=sunset]{--bgA:linear-gradient(180deg,#1b1147 0%,#6a2a7a 45%,#e0527a 80%,#ff9a56 100%);--bgB:linear-gradient(180deg,#3a1559 0%,#a8345f 40%,#ff6b4a 78%,#ffc15e 100%);--fgA:#fff1e0;--fgB:#fffaf0;--font:'Anton','Bebas Neue',Impact,sans-serif;--glow:0 .03em .12em rgba(60,10,50,.55),0 0 .3em rgba(255,190,120,.35)}
 body.has-div #app::before{content:"";position:absolute;z-index:2;top:6%;bottom:6%;left:50%;width:2px;transform:translateX(-50%);pointer-events:none}
 body.has-div #app.l1::before,body.has-div #app.l1::after{display:none}
-body.has-div #app.l3::before,body.has-div #app.l3::after{left:38%}
+body.has-div #app.l3::before,body.has-div #app.l3::after{left:40%}
 body[data-theme=neon] #app::before{background:linear-gradient(#a58bff,#5de6ff,#7dffc4);box-shadow:0 0 12px #5de6ff}
 body[data-theme=neon] #app::after{content:"";position:absolute;z-index:3;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 40% 35%,rgba(255,255,255,.35),rgba(120,130,220,.2));border:1px solid rgba(180,200,255,.4);box-shadow:0 0 16px rgba(120,160,255,.4);pointer-events:none}
 body[data-theme=matrix] #app::before{width:1px;background:#00ff41;opacity:.4;box-shadow:0 0 8px #00ff41}
