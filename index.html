@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="hi">
-<!-- Chrono v6 - dekho AI_GUIDE.md -->
+<!-- Chrono v7 - dekho AI_GUIDE.md -->
 <head>
 <meta charset="utf-8">
 <meta name="theme-color" content="#000000">
@@ -8,81 +8,78 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Chrono – Stopwatch & Timer</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@600&family=Rajdhani:wght@700&family=Share+Tech+Mono&family=Orbitron:wght@800&family=Anton&family=Teko:wght@600&family=Exo+2:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@600&family=Rajdhani:wght@700&family=Share+Tech+Mono&family=Orbitron:wght@800&family=Anton&family=Teko:wght@600&family=Exo+2:wght@700&family=Allerta+Stencil&family=Bungee+Outline&family=Audiowide&family=Black+Ops+One&family=Playfair+Display:wght@900&family=Nunito:wght@900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="extras.css">
 </head>
 <body data-theme="flip">
+<div id="bg"></div>
 <canvas id="rain"></canvas>
 <main id="app" class="l1">
-  <section class="panel" id="pH"><button class="arr up" data-u="3600000" data-d="1" aria-label="Hours badhao">▲</button><div class="digits" id="dH">0</div><div class="lbl">HOURS</div><button class="arr dn" data-u="3600000" data-d="-1" aria-label="Hours ghatao">▼</button></section>
+  <section class="panel" id="pH"><button class="arr up" data-u="3600000" data-d="1" aria-label="Hours badhao">▲</button><div class="digits" id="dH">0</div><div class="lbl">HOURS</div><div class="apm"></div><button class="arr dn" data-u="3600000" data-d="-1" aria-label="Hours ghatao">▼</button></section>
   <section class="panel" id="pM"><button class="arr up" data-u="60000" data-d="1" aria-label="Minutes badhao">▲</button><div class="digits" id="dM">00</div><div class="lbl">MINUTES</div><button class="arr dn" data-u="60000" data-d="-1" aria-label="Minutes ghatao">▼</button></section>
   <section class="panel" id="pS"><button class="arr up" data-u="1000" data-d="1" aria-label="Seconds badhao">▲</button><div class="digits" id="dS">00</div><div class="lbl" id="lS">SECONDS</div><button class="arr dn" data-u="1000" data-d="-1" aria-label="Seconds ghatao">▼</button></section>
 </main>
 
+<div id="off"></div>
 <div id="phase"></div>
-<div id="clkx"><div id="cdate"></div><div id="cworld"></div></div>
+<div id="clkx"><div id="cdate"></div><div id="cnext"></div><div id="cworld"></div></div>
 <div id="ring"><span id="ringT"></span><button class="g on" id="ringX">Stop</button></div>
+<div id="tagdlg"><div class="box"><p>Label chuno</p><div id="tagList"></div><div class="acts"><button class="g" id="tagNew">＋ Naya</button><button class="g" id="tagX">Close</button></div></div></div>
+<div id="guide"><div class="box"><h3 id="gT"></h3><ul id="gL"></ul><button class="g on" id="gOk">OK</button></div></div>
 <div id="dlg"><div class="box"><p id="dT"></p><input id="dI" maxlength="40"><div class="acts"><button class="g" id="dN">Cancel</button><button class="g on" id="dY">OK</button></div></div></div>
 <div id="ui">
   <div class="top" id="tabs"><button class="g on" id="tSw">Stopwatch</button><button class="g" id="tTm">Timer</button><button class="g" id="tIv">Interval</button><button class="g" id="tClk">Clock</button></div>
-  <div class="top" id="tools"><button class="g" id="bLaps" aria-label="Laps">Laps</button><button class="g" id="bFs" aria-label="Fullscreen">⛶</button><button class="g" id="bSet" aria-label="Settings">⚙</button></div>
+  <div class="top" id="tools"><button class="g" id="bLaps" aria-label="Laps">Laps</button><button class="g" id="bWake" aria-label="Keep screen on">☀</button><button class="g" id="bFs" aria-label="Fullscreen">⛶</button><button class="g" id="bSet" aria-label="Settings">⚙</button></div>
   <div id="chips"></div>
   <div id="bar"><button class="g" id="bReset">Reset</button><button class="g on" id="go">▶</button><button class="g" id="bLap">Lap</button></div>
 </div>
 
-<aside class="sheet" id="set" aria-label="Settings">
-  <h2>Settings <button class="g" id="xSet">Close</button></h2>
-  <details class="sec"><summary>Theme</summary><div id="themes"></div></details>
-  <details class="sec"><summary>Custom theme</summary>
-    <div class="row"><span>Panel 1 rang</span><input type="color" id="cA"></div>
-    <div class="row"><span>Panel 2 rang</span><input type="color" id="cB"></div>
-    <div class="row"><span>Digit 1 rang</span><input type="color" id="cFA"></div>
-    <div class="row"><span>Digit 2 rang</span><input type="color" id="cFB"></div>
-    <div class="row"><span>Font</span><select id="cFont"></select></div>
-    <label class="row"><span>Glow</span><input type="checkbox" id="cGlow"></label>
-    <label class="row"><span>Outline digits</span><input type="checkbox" id="cOut"></label>
-    <label class="row"><span>Flip split line</span><input type="checkbox" id="cSplit"></label>
-  </details>
-  <details class="sec"><summary>Display</summary>
-    <div class="row"><span>Digit style</span><select id="oDs"><option value="plain">Plain</option><option value="soft">Soft flip</option><option value="card">Flip card</option></select></div>
-    <div class="row"><span>Tap se start/pause</span><select id="oTap"><option value="off">Off</option><option value="dbl">Double-tap</option><option value="any">Tap anywhere</option></select></div>
-    <label class="row"><span>Milliseconds<small>Stopwatch me seconds ke saath .00</small></span><input type="checkbox" id="oMs"></label>
-    <label class="row"><span>Labels<small>HOURS / MINUTES / SECONDS likha dikhe</small></span><input type="checkbox" id="oLbl"></label>
-    <label class="row"><span>Matrix rain<small>Band karoge to battery bachegi</small></span><input type="checkbox" id="oRain"></label>
-    <label class="row"><span>Screen on rakho<small>Chalte time screen band na ho</small></span><input type="checkbox" id="oWake"></label>
-  </details>
-  <details class="sec"><summary>Alerts</summary>
-    <label class="row"><span>Alarm sound<small>Timer khatam hone par beep</small></span><input type="checkbox" id="oSnd"></label>
-    <label class="row"><span>Vibration<small>Timer khatam hone par</small></span><input type="checkbox" id="oVib"></label>
-  </details>
-  <details class="sec"><summary>Interval (Pomodoro)</summary>
-    <div class="row" id="ivPresets"></div>
-    <div class="row"><span>Focus (mm:ss)</span><input class="num" type="text" id="ivW"></div>
-    <div class="row"><span>Chhota break (mm:ss)</span><input class="num" type="text" id="ivB"></div>
-    <div class="row"><span>Lamba break (mm:ss)</span><input class="num" type="text" id="ivL"></div>
-    <div class="row"><span>Lamba break kitne focus ke baad</span><input class="num" type="number" min="1" max="12" id="ivN"></div>
-    <div class="row"><span>Kitne rounds ke baad band<small>0 = band na ho</small></span><input class="num" type="number" min="0" max="99" id="ivR"></div>
-    <label class="row"><span>Agla phase apne aap shuru</span><input type="checkbox" id="ivAuto"></label>
-  </details>
-  <details class="sec"><summary>Timer presets</summary><div id="tpList"></div></details>
-  <details class="sec"><summary>Clock (live time)</summary>
-    <label class="row"><span>24 ghante ka format</span><input type="checkbox" id="k24"></label>
-    <label class="row"><span>Seconds dikhao</span><input type="checkbox" id="kSec"></label>
-    <label class="row"><span>Date aur din dikhao</span><input type="checkbox" id="kDate"></label>
-    <div class="row"><span>World clock</span><span><select id="zSel"></select><button class="g x" id="zAdd">＋</button></span></div><div id="zList"></div>
-    <div class="row"><span>Alarm clock<small>App khula ho tab bajta hai</small></span><span><input class="num wide" type="time" id="aTime"><button class="g x" id="aAdd">＋</button></span></div><div id="aList"></div>
-  </details>
-  <details class="sec" id="secH"><summary>History</summary>
-    <div class="row"><span>Label (naye session ka)</span><input class="num wide" id="hLabel" placeholder="Padhai"></div>
-    <div id="hBody"></div><button class="g csv" id="hClear">Clear history</button>
-  </details>
-  <details class="sec"><summary>Backup</summary>
-    <button class="g csv" id="bkEx">Export JSON</button> <button class="g csv" id="bkIm">Import file</button><input type="file" id="bkFile" accept=".json,application/json" hidden>
-    <textarea class="ta" id="bkTxt" placeholder="Export ka JSON yahan aayega. Import ke liye yahan paste karo."></textarea>
-    <button class="g csv" id="bkPaste">Paste se import</button>
-  </details>
-  <details class="sec"><summary>Shortcuts</summary><p class="empty">Space = start/pause, L = lap, R = reset, F = fullscreen</p></details>
-</aside>
+<div id="set" class="page" aria-label="Settings">
+ <header><button class="g" id="xSet" aria-label="Back">←</button><h2 id="pgT">Settings</h2></header>
+ <div class="pgbody"><nav id="nav"><button data-go="look">Look</button><button data-go="display">Display</button><button data-go="control">Controls</button><button data-go="timer">Timer</button><button data-go="clock">Clock</button><button data-go="alerts">Alarms</button><button data-go="data">Data</button><button data-go="help">Help</button></nav>
+ <div id="pages">
+ <section class="pg" data-pg="look"><h3>Theme</h3><div id="themes"></div>
+  <h3>Digits</h3><div class="row"><span>Digit style</span><select id="oDs"><option value="plain">Plain</option><option value="soft">Soft flip</option><option value="card">Flip card</option></select></div><div class="row"><span>Digit font</span><select id="oFont"></select></div><label class="row"><span>Card style<small>Rounded cards with gaps</small></span><input type="checkbox" id="oCard"></label>
+  <h3>Background</h3><div class="row"><span>Illustrated background</span><select id="oBg"><option value="none">None</option><option value="stars">Starry sky</option><option value="city">City skyline</option><option value="mountains">Mountains</option></select></div><div class="row"><span>Orientation</span><select id="oOri"><option value="land">Landscape only</option><option value="both">Portrait too</option></select></div>
+  <h3>Custom theme</h3>
+  <div class="row"><span>Panel 1 rang</span><input type="color" id="cA"></div><div class="row"><span>Panel 2 rang</span><input type="color" id="cB"></div>
+  <div class="row"><span>Digit 1 rang</span><input type="color" id="cFA"></div><div class="row"><span>Digit 2 rang</span><input type="color" id="cFB"></div>
+  <div class="row"><span>Font</span><select id="cFont"></select></div><label class="row"><span>Glow</span><input type="checkbox" id="cGlow"></label><label class="row"><span>Outline digits</span><input type="checkbox" id="cOut"></label><label class="row"><span>Flip split line</span><input type="checkbox" id="cSplit"></label>
+ </section>
+ <section class="pg" data-pg="display"><label class="row"><span>Milliseconds<small>Stopwatch me seconds ke saath .00</small></span><input type="checkbox" id="oMs"></label><label class="row"><span>Labels<small>HOURS / MINUTES / SECONDS</small></span><input type="checkbox" id="oLbl"></label><div class="row"><span>Language (labels)</span><select id="oLang"><option value="en">English</option><option value="hi">हिंदी</option></select></div><label class="row"><span>Keep screen on<small>Poore app me, ☀ button se bhi</small></span><input type="checkbox" id="oWake"></label><label class="row"><span>Burn-in protection<small>Digits har minute 2-3 pixel khisakte hain</small></span><input type="checkbox" id="oBurn"></label><label class="row"><span>Matrix rain<small>Band karoge to battery bachegi</small></span><input type="checkbox" id="oRain"></label>
+ </section>
+ <section class="pg" data-pg="control"><div class="row"><span>Tap se start/pause</span><select id="oTap"><option value="off">Off</option><option value="dbl">Double-tap</option><option value="any">Tap anywhere</option></select></div><label class="row"><span>Swipe left/right<small>Mode badlo</small></span><input type="checkbox" id="oSwipe"></label><label class="row"><span>Pinch<small>Digit ka size</small></span><input type="checkbox" id="oPinch"></label><div class="row"><span>Clock screen off</span><select id="oOff"><option value="off">Off</option><option value="one">Single tap</option><option value="dbl">Double tap</option></select></div>
+  <div class="row"><span>Digit size</span><button class="g x" id="szReset">Reset</button></div>
+ </section>
+ <section class="pg" data-pg="timer"><h3>Interval (Pomodoro)</h3><div class="row" id="ivPresets"></div>
+  <div class="row"><span>Focus (mm:ss)</span><input class="num" type="text" id="ivW"></div><div class="row"><span>Chhota break (mm:ss)</span><input class="num" type="text" id="ivB"></div><div class="row"><span>Lamba break (mm:ss)</span><input class="num" type="text" id="ivL"></div>
+  <div class="row"><span>Lamba break kitne focus ke baad</span><input class="num" type="number" min="1" max="12" id="ivN"></div>
+  <div class="row"><span>Kitne rounds ke baad band<small>0 = band na ho</small></span><input class="num" type="number" min="0" max="99" id="ivR"></div><label class="row"><span>Agla phase apne aap shuru</span><input type="checkbox" id="ivAuto"></label>
+  <h3>Timer presets</h3><div id="tpList"></div>
+  <h3>Tags (labels)</h3><div id="tgList"></div><button class="g csv" id="tgAdd">＋ Naya tag</button>
+ </section>
+ <section class="pg" data-pg="clock"><label class="row"><span>24 ghante ka format</span><input type="checkbox" id="k24"></label><label class="row"><span>Seconds dikhao</span><input type="checkbox" id="kSec"></label><label class="row"><span>Date aur din dikhao</span><input type="checkbox" id="kDate"></label><div class="row"><span>Date/din ki jagah</span><select id="kDp"><option value="bottom">Neeche</option><option value="top">Digits ke upar</option></select></div><div class="row"><span>Date format</span><select id="kDf"><option value="dmy">dd/mm/yy</option><option value="mdy">mm/dd/yy</option><option value="ymd">yyyy-mm-dd</option><option value="long">15 Nov 2026</option></select></div>
+  <div class="row"><span>Local city ka naam</span><input class="num wide" type="text" id="kLc" maxlength="20"></div><label class="row"><span>Agla alarm dikhao</span><input type="checkbox" id="kNext"></label>
+  <h3>World clock</h3><div class="row"><span>Shehar jodo</span><span><select id="zSel"></select><button class="g x" id="zAdd">＋</button></span></div><div id="zList"></div>
+  <h3>Time chime</h3><div class="row"><span>Chime</span><select id="cmM"><option value="off">Off</option><option value="hour">Har ghante</option><option value="half">Har aadhe ghante</option></select></div><label class="row"><span>Bolkar time batao</span><input type="checkbox" id="cmSay"></label><label class="row"><span>Awaaz (bell)</span><input type="checkbox" id="cmSnd"></label>
+  <div class="row"><span>Kab se kab tak</span><span><input class="num wide" type="time" id="cmFrom"><input class="num wide" type="time" id="cmTo"></span></div>
+  <div class="row"><span>Test</span><button class="g x" id="cmTest">Play</button></div>
+ </section>
+ <section class="pg" data-pg="alerts"><h3>Alarm clock<small> (app khula ho tab bajta hai)</small></h3>
+  <div class="row"><span>Time</span><input class="num wide" type="time" id="aTime"></div><div class="row"><span>Naam</span><input class="num wide" type="text" id="aName" maxlength="24"></div>
+  <div class="row"><span>Repeat</span></div><div id="aDays"></div><div class="row"><span>Sound</span><select id="aSnd"></select></div><button class="g csv" id="aAdd">＋ Alarm jodo</button><div id="aList"></div>
+  <h3>Timer / Interval alerts</h3><div class="row"><span>Sound</span><select id="oSk"></select></div><label class="row"><span>Alarm sound<small>Timer khatam hone par</small></span><input type="checkbox" id="oSnd"></label><label class="row"><span>Vibration</span><input type="checkbox" id="oVib"></label>
+ </section>
+ <section class="pg" data-pg="data"><h3>History</h3><div class="row"><span>Label (naye session ka)</span><select id="hLabel"></select></div><div id="hBody"></div><button class="g csv" id="hClear">Clear history</button>
+  <h3>Backup</h3><button class="g csv" id="bkEx">Export JSON</button> <button class="g csv" id="bkIm">Import file</button><input type="file" id="bkFile" accept=".json,application/json" hidden>
+  <textarea class="ta" id="bkTxt" placeholder="Export ka JSON yahan aayega. Import ke liye yahan paste karo."></textarea><button class="g csv" id="bkPaste">Paste se import</button>
+ </section>
+ <section class="pg" data-pg="help"><h3>Shortcuts</h3><p class="empty">Space = start/pause, L = lap, R = reset, F = fullscreen, Esc = settings band</p>
+  <h3>Gestures</h3><p class="empty">Swipe left/right = mode badlo. Pinch = digit size. Double-tap = start/pause (Clock me screen off).</p>
+  <button class="g csv" id="gRe">Gesture guide dobara dekho</button><h3>About</h3><p class="empty">Chrono v7</p>
+ </section>
+ </div></div></div>
 <aside class="sheet" id="lapsheet" aria-label="Laps">
   <h2>Laps <button class="g" id="xLap">Close</button></h2><button class="g csv" id="bCsv">Export CSV</button><div id="lapList"></div>
 </aside>

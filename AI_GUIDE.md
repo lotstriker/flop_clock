@@ -1,6 +1,6 @@
 # Chrono – Stopwatch & Timer: AI Guide
 
-**Current version: v6** (zip: `chrono_v6_hours-layout-spacing.zip`)
+**Current version: v7** (zip: `chrono_v7_settings-page-gestures-alarms-fonts-bg.zip`)
 
 ## 1. MANDATORY RULES (jo bhi AI is project par kaam kare, use ye follow karna hi hai)
 
@@ -20,7 +20,10 @@
 14. **Navigation fixed hai**: upar sirf 4 mode tabs (Stopwatch, Timer, Interval, Clock). History, Tools aur Settings menu/settings me chhupe rahein. Naya tab user ki permission ke bina mat jodo.
 15. **Tests zaroori**: zip me `tests/` folder hamesha jaye. Zip banane se pehle `python3 tests/run_tests.py` chalao (headless Chrome, playwright) aur "ALL PASSED" aana chahiye. Naya feature jode to uska test bhi `tests/run_tests.py` me jodo. Test fail ho to zip mat banao.
 16. **Phase 4 (Android APK) se pehle 3 faisle user se lo**: (a) app ka naam aur package ID, (b) APK direct ya Google Play, (c) weather provider.
-17. Har version me `sw.js` ka cache naam (`chrono-vN`) aur `FILES` list update karo, warna PWA purana code dikhayega.
+18. **Design originality**: reference apps (jaise Flip Clock screenshots) se sirf *feature ki soch* lo. Unke icons, illustrations, theme images, naam ya layout copy mat karo. Apna design banao (backgrounds `tools/gen_assets.py` me hamare apne SVG hain).
+19. **Jo nahi karna (user ne tay kiya)**: Paid/Premium; Google Drive auto-backup aur crash reports (JSON export kaafi); floating clock, live wallpaper, pocket mode; Share/Rate/Feedback/privacy policy page (Play Store tak); seasonal themes (Halloween, Festive); calendar/analog widgets aur "Start week on"; side rail ke 5 icons (navigation rule 14).
+20. `extras.css` auto-generated hai (`python3 tools/gen_assets.py`); haath se mat badlo. Built-in fonts (7-Segment, Pixel) aur backgrounds wahin se aate hain.
+17. Har version me `sw.js` ka cache naam (`chrono-vN`) aur `FILES` list (ab `extras.css` bhi) update karo, warna PWA purana code dikhayega.
 
 ## 2. Project overview
 
@@ -32,12 +35,13 @@ Landscape me chalne wala stopwatch + timer + interval. Bade digits, adaptive lay
 | 1 minute se 1 ghanta | `l2`: minutes aur seconds half-half |
 | 1 ghanta ya zyada | `l3`: hours (thoda left) aur minutes (thoda right) barabar bade aur beech me saaf gap, seconds bahut chhota, right column (20%) me, uski baseline minutes ke digit ki baseline ke barabar |
 
-Modes: Stopwatch (`sw`), Timer (`tm`), Interval/Pomodoro (`iv`), Clock/live time (`clk`, layout `l3` seconds ke saath ya `l4` bina seconds).
+Gestures: left/right swipe = mode badlo, pinch = digit size, double-tap = start/pause (Clock me screen off). Modes: Stopwatch (`sw`), Timer (`tm`), Interval/Pomodoro (`iv`), Clock/live time (`clk`, layout `l3` seconds ke saath ya `l4` bina seconds).
 
 Files:
 - `index.html`: HTML structure (tabs, panels, bar, settings, laps sheet).
 - `style.css`: sab design, themes, animations.
 - `app.js`: sab logic.
+- `extras.css`: auto-generated (built-in fonts + background art). `tools/gen_assets.py` isko banata hai.
 - `build_single.py`: `python3 build_single.py` se css+js ko ek `chrono_single.html` me jodta hai (preview/hosting ke liye jahan alag files na chalein).
 - `docs/CHRONO_ANDROID_APP_PLAN.md`: Android app ka proposal (Capacitor, weather, widgets, roadmap). Sirf planning.
 - `manifest.json`, `sw.js`, `icon-192.png`, `icon-512.png`: PWA (offline install). HTTPS hosting par kaam karte hain.
@@ -47,6 +51,10 @@ Files:
 ## 3. Test checklist (har change ke baad)
 
 - [ ] `python3 tests/run_tests.py` -> ALL PASSED.
+- [ ] Settings ek full-screen page hai (left categories, back button).
+- [ ] ☀ button se screen-on poore app me kaam kare (sirf chalte time nahi).
+- [ ] Clock me double-tap se screen off, tap se wapas.
+- [ ] Swipe se mode badle, pinch se size; tap logic na bigde.
 - [ ] Settings (⚙) aur Laps dono khulte hain; bahar (main screen) touch karne par band ho jate hain.
 - [ ] Settings ke sections collapsed hain, ek time me ek hi khulta hai.
 - [ ] Timer ke ▲▼ arrows kaam karein (dabaye rakho to repeat), aur Chrome me text select / Google search popup na aaye.
@@ -95,32 +103,47 @@ Code map:
 - **Digit style**: `S.ds` (`plain`/`soft`/`card`), `setT()` aur CSS `.fl.a/.b/.c/.d` (asli flip-card). Digit par `transform` mat lagao, `translate` use hota hai.
 - **PWA**: `manifest.json`, `sw.js`, registration `app.js` ke end me (sirf http/https par).
 
+- **Settings page**: `index.html` `#set` (`.page`), `.pg[data-pg]` sections, nav `#nav`; JS `goPage()`, `PG`. Naya option = HTML row + `bind('#id',obj,'key',fn)`.
+- **Gestures**: `app.js` me `ptr`, `gend`, pointer handlers on `#app` (swipe `setMode`, pinch `S.scale`, taps). `#app{touch-action:none}`.
+- **Screen off / wake / burn-in**: `screenOff()`, `#off`; `wakeSync()`, `#bWake`; `burnShift()` (`bx/by` + `--bx/--by`, `fit()` me jode jate hain).
+- **Card style**: `body.cardstyle` CSS; **backgrounds**: `body[data-bg]`, `#bg` (CSS `extras.css`); **portrait**: `body.pm` + `@media (orientation:portrait)`.
+- **Alarms**: `S.alarms[{t,on,n,d[],snd,skip}]`, `drawAlarms()`, `nextAlarm()`, `ring()`, `playSound()` (`tone()`).
+- **Clock info**: `labels()`, `fmtDate()`, `clkx()`, `zinfo()` (world clock diff/day), `S.clk.dp/df/lc/next`.
+- **Chime**: `doChime()`, `S.chime`. **Tags**: `S.tags`, `pickTag()`, `drawTags()`. **Language**: `I18N`, `T()`, `applyLang()` (settings ka text Hinglish hi hai). **Guide**: `showGuide()`, `S.guide`.
+- **Fonts**: `FONTS` (+ built-in `Chrono7Seg`, `ChronoPixel`), `S.font`, `applyFont()`.
+
 Naya feature jodna: (1) Section 5 se chuno, (2) chhota plan, (3) code, (4) checklist, (5) version badhao + zip + guide update.
 
 ## 5. Pending features
 
-### 5A. Phase 4: Android APK (Capacitor)
-- Android ka native alarm aur notification, taaki **band app me bhi** timer/alarm sahi time par bajay.
-- "Background me chalne do" guide page (Xiaomi, Realme, Vivo jaise phones ke battery settings ke steps).
-- Capacitor project: web folder, config, build steps. Is sandbox me APK nahi ban sakta; user ke computer par Android Studio se ya CI se banega.
+### 5A. Phase 4: Android APK (Capacitor) - sab yahi pending hai
+- Alarm **silent mode me bhi** aur **band app me bhi** bajna (native alarm, notification).
+- **Quick start notification**: notification bar se Pomodoro/Stopwatch/Timer shuru.
+- **Keep running guide page**: battery optimisation hatana, notification permission, "recent apps me lock" (template).
+- **Charging par standby** aur **Always-on hours** ("charge hote time clock chalu", "subah 5:30 se 7:30"), brightness aur screen timeout.
+- **Permission samjhane wala dialog**.
+- **Widgets**: pehle sirf "chalta hua timer"; baad me flip clock / world clock widget.
+- Time chime/speak band app me (web me sirf app khula ho tab).
 - **Pehle 3 faisle chahiye** (rule 16): app naam + package ID, APK direct ya Google Play, weather provider.
-- Plan: `docs/CHRONO_ANDROID_APP_PLAN.md` (sirf proposal, uski Final Project Rule lagu).
+- Is sandbox me APK nahi ban sakta; Capacitor project/steps bana sakte hain. Plan: `docs/CHRONO_ANDROID_APP_PLAN.md` (sirf proposal).
 
 ### 5B. Phase 5: baad me
-- **Weather**: pehle sirf manual city, abhi ka temperature aur condition. Location permission aur forecast uske baad.
-- **Widget**: sirf "chalta hua timer" wala (Android native, Phase 4 ke baad).
+- Weather (pehle manual city, temperature + condition), phir location aur forecast.
 
-### 5C. Pending (kam zaroori, user ne pending me rakhe)
-- Compass.
-- Battery info.
-- Quick Settings tile.
+### 5C. Kam zaroori (pending)
+- Compass, battery info, Quick Settings tile.
 
-### 5D. Phase 4 ki khuli decisions (plan document se)
-App ka naam aur package ID; sirf Android ya Android + PWA; weather Home card + full page; weather provider; approximate location kaafi hai ya nahi; band app me exact alarm; pehli release ke tools; widgets pehli release me ya baad me; APK direct ya Google Play; final navigation (ab fixed: upar 4 tabs).
+### 5D. Chhote sudhaar jo dikhe
+- Settings ka text abhi Hinglish me hai (sirf main labels Hindi/English me badalte hain).
+- Fonts ke liye "dim unlit segments" wala asli 7-segment look (ab sirf lit segments).
+- History/presets ko IndexedDB me (abhi localStorage).
 
 ## 6. Known bugs / problems
 
 - Timer/alarm clock ka alert tab hi bajta hai jab page/app khula ho (browser tab ya PWA). Band app me alert ke liye Android native chahiye (Phase 4).
+- Chime/speak aur alarm tab hi chalte hain jab app khula ho. Browser ko ek baar screen touch bhi chahiye.
+- "Double-tap screen off" asli screen band nahi karta; AMOLED par poori kaali screen dikhata hai (pixel band). Screen on rakhne ke liye ☀ alag hai.
+- Pinch sirf touch screen par; desktop par test synthetic events se hota hai.
 - Alarm ki awaaz ke liye browser ko ek baar screen touch chahiye (audio permission); touch ke bina alarm chup reh sakta hai.
 - History aur presets `localStorage` me hain (max 500 history entries). Browser data saaf karne par ja sakte hain; Settings > Backup se export karo. Fix idea: IndexedDB.
 - PWA ka service worker sirf HTTPS/localhost par chalta hai. Tests `file://` par chalte hain, to SW ka offline behaviour abhi test nahi hua. claude.ai preview me SW register nahi hota.
@@ -142,6 +165,18 @@ App ka naam aur package ID; sirf Android ya Android + PWA; weather Home card + f
 - Interval me total rounds ke baad band hone ka option.
 
 ## 8. Changelog
+
+### v7 (`chrono_v7_settings-page-gestures-alarms-fonts-bg`)
+- **Settings** ab alag full-screen page (left categories: Look, Display, Controls, Timer, Clock, Alarms, Data, Help), back button.
+- **Keep screen on**: ☀ button + Settings; ab poore app me (clock/idle me bhi), pehle sirf chalte time.
+- **Burn-in protection** (digits har minute 2-3 px), **Clock screen off** (double/single tap), **swipe** se mode, **pinch** se digit size.
+- **Card style** (option, purana look default), **Date/din digits ke upar** + AM/PM kone me (option), date formats.
+- **Alarm**: naam, Mo-Su repeat, "skip next", sound choice (5), clock par "agla alarm". **World clock**: aaj/kal + ghante ka fark, local city naam.
+- **Fonts**: built-in 7-Segment aur Pixel (offline, fontTools se banaye), Stencil, Outline, Audiowide, Black Ops, Playfair, Nunito; global "Digit font".
+- **Time chime** (har ghante/aadhe ghante, bolkar bhi, quiet hours), **tag picker** (labels), **backgrounds** (starry sky, city, mountains: apne SVG), **portrait option**, **Hindi/English labels**, **first-run gesture guide**.
+- Bug fix: timer set ke neeche wale arrows ko naya label chip dhak raha tha; arrows aur chips ki jagah theek ki (digit factor `.45` -> `.40`).
+- Tests: ~60 checks; portrait aur first-run guide ke alag contexts.
+- Android items (5A) aur "nahi karna" list guide me lock.
 
 ### v6 (`chrono_v6_hours-layout-spacing`)
 - Hours wale layout (`l3`) me seconds aur chhota (height `.26` -> `.18`, width `.7` -> `.62`) aur seconds column `24%` -> `20%`.
